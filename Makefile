@@ -19,5 +19,5 @@ all:	$(BINS)
 clean:
 	rm -f *.o *.lst *.map *.gb *~ *.rel *.cdb *.ihx *.lnk *.sym *.asm *.noi *.adb *.gbc
 
-plains.gb: plains.o sprites.o tiles.o bkg_funcs.o
-	$(CC) $(CFLAGS) -Wm-yC -o plains.gb plains.o sprites.o tiles.o bkg_funcs.o
+plains.gb: plains.o sprites.o tiles.o bkg_funcs.o entity.o
+	$(CC) $(CFLAGS) -Wm-yC -o plains.gb plains.o sprites.o tiles.o bkg_funcs.o entity.o

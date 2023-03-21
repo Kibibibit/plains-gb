@@ -1,8 +1,11 @@
 #include <gb/gb.h>
 #include <gb/cgb.h>
+#include <gbdk/emu_debug.h>
 #include "bkg_funcs.h"
 #include "sprites.h"
 #include "tiles.h"
+#include "entity.h"
+#include "fixed.h"
 
 
 const palette_color_t palettes[] = {
@@ -55,30 +58,40 @@ int main() {
     set_sprite_data(0x1,8,sprites);
     set_bkg_data(0x0,4,tiles);
     set_sprite_palette(0x0,4,palettes);
-    set_sprite_tile(0,0x2);
-
     set_bkg_palette(0,4,bkg_palettes);
-
-    set_bkg_tile_xy(0,0,3);
-    set_bkg_tile_xy(0,1,2);
-    set_bkg_tile_xy(0,2,1);
-    set_bkg_prop_xy(0,0,1);
-    set_bkg_prop_xy(0,1,1);
-    set_bkg_prop_xy(0,2,1);
-
-    set_sprite_prop(0,1);
-
-    move_sprite(0,40,40);
 
     
 
+    entity_t * player = create_entity(0x1, 0x0);
+    entity_move(player, 8, 16);
+
+    fixed_t test;
+    test.h = -5;
+    test.l = 128;
+
+    fixed_t test2;
+    test2.h = 4;
+    test2.l = 128;
+
+    fixed_t out;
+    out.w = test2.w + test.w;
+
+    BGB_printf("%d.%d %d %x", test.h, test.l, test.w, test.w);
+    BGB_printf("%d.%d %d %x", test2.h, test2.l, test2.w, test2.w);
+    BGB_printf("%d.%d %d %x", out.h, out.l, out.w, out.w);
+    BGB_printf("%d",test.w+test2.w);
 
     while(1) {
 
-    
-
+        entity_update(player);
+        entity_draw(player);
+        
         wait_vbl_done();
         
     }
 
 }
+
+//   FB.80
+// + 05.80
+//   
