@@ -67,8 +67,7 @@ int main() {
     entity_move(player, 8, 16);
 
     fixed_t test;
-    test.h = -5;
-    test.l = 128;
+    test = new_fixed(-5,128);
 
     fixed_t test2;
     test2.h = 4;
