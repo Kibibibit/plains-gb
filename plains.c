@@ -56,7 +56,7 @@ int main() {
     SHOW_BKG;    
 
     set_sprite_data(0x1,8,sprites);
-    set_bkg_data(0x0,4,tiles);
+    set_bkg_data(0x0,10,tiles);
     set_sprite_palette(0x0,4,palettes);
     set_bkg_palette(0,4,bkg_palettes);
 
