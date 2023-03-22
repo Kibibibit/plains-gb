@@ -6,6 +6,7 @@
 #include "tiles.h"
 #include "entity.h"
 #include "fixed.h"
+#include "constants.h"
 
 
 const palette_color_t palettes[] = {
@@ -62,7 +63,7 @@ int main() {
 
     
 
-    entity_t * player = create_entity(0x1, 0x0);
+    entity_t * player = create_entity(SPR_INDEX_KNIGHT, 0x0);
     entity_move(player, 8, 16);
 
     fixed_t test;
