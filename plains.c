@@ -63,7 +63,7 @@ int main() {
 
     
 
-    entity_t * player = create_entity(SPR_INDEX_KNIGHT, 0x0);
+    entity_t * player = create_entity(SPR_INDEX_KNIGHT_0, 0x0);
     entity_move(player, 8, 16);
 
     fixed_t test;
