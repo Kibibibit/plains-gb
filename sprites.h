@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 7
+  Tiles                : 0 to 11
 
   Palette colors       : Included.
   SGB Palette          : None.
@@ -102,13 +102,17 @@
 
 /* CGB palette entries. */
 #define spritesCGB0 0
-#define spritesCGB1 1
-#define spritesCGB2 2
-#define spritesCGB3 2
+#define spritesCGB1 0
+#define spritesCGB2 0
+#define spritesCGB3 1
 #define spritesCGB4 1
-#define spritesCGB5 0
-#define spritesCGB6 3
-#define spritesCGB7 0
+#define spritesCGB5 2
+#define spritesCGB6 2
+#define spritesCGB7 2
+#define spritesCGB8 1
+#define spritesCGB9 0
+#define spritesCGB10 3
+#define spritesCGB11 0
 /* Start of tile array. */
 extern const unsigned char sprites[];
 

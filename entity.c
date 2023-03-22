@@ -13,6 +13,8 @@ entity_t *create_entity(uint8_t tile_index, uint8_t sprite_index)
     out->y.w = 0;
     out->dx.w = 0;
     out->dy.w = 0;
+    out->height = 0;
+    out->width = 0;
     out->sprite_index = sprite_index;
     out->tile_index = tile_index;
     set_sprite_tile(sprite_index, tile_index);

@@ -56,7 +56,7 @@ int main() {
     SHOW_SPRITES;
     SHOW_BKG;    
 
-    set_sprite_data(0x1,8,sprites);
+    set_sprite_data(0x1,12,sprites);
     set_bkg_data(0x0,10,tiles);
     set_sprite_palette(0x0,4,palettes);
     set_bkg_palette(0,4,bkg_palettes);
@@ -70,8 +70,7 @@ int main() {
     test = new_fixed(-5,128);
 
     fixed_t test2;
-    test2.h = 4;
-    test2.l = 128;
+    test2 = new_fixed(4,128);
 
     fixed_t out;
     out.w = test2.w + test.w;
@@ -92,6 +91,3 @@ int main() {
 
 }
 
-//   FB.80
-// + 05.80
-//   

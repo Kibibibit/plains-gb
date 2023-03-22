@@ -14,6 +14,7 @@ typedef struct {
     fixed_t dx;
     fixed_t dy;
     uint8_t height;
+    uint8_t width;
     uint8_t props;
     uint8_t tile_index;
     uint8_t sprite_index;
