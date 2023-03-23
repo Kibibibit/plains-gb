@@ -6,7 +6,7 @@
 
 #define PROP_HORI_FLIP 0b00100000
 
-#define GRAVITY 0x64
+#define GRAVITY 0x20
 
 typedef struct {
     ufixed_t x;
@@ -18,6 +18,7 @@ typedef struct {
     uint8_t props;
     uint8_t tile_index;
     uint8_t sprite_index;
+    uint8_t timer;
 } entity_t;
 
 
@@ -27,8 +28,9 @@ void entity_set_prop(entity_t * entity, uint8_t prop);
 void entity_move(entity_t * entity, uint8_t x, uint8_t y);
 void entity_draw(entity_t * entity);
 uint8_t entity_face_left(entity_t * entity);
+uint8_t entity_collides_at(entity_t * entity, uint8_t x, uint8_t y);
 void destroy_entity(entity_t * entity);
-
-
+void entity_set_tile(entity_t * entity, uint8_t tile_index);
+uint8_t on_floor(entity_t *entity);
 
 #endif

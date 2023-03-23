@@ -5,7 +5,7 @@
  Include File.
 
  Info:
-  Form                 : All tiles as one unit.
+  Form                 : Each tile separate.
   Format               : Gameboy 4 color.
   Compression          : None.
   Counter              : None.
@@ -72,7 +72,7 @@
 
 /* Gameboy Color palette 3 */
 #define tilesCGBPal3c0 32767
-#define tilesCGBPal3c1 31
+#define tilesCGBPal3c1 26425
 #define tilesCGBPal3c2 10570
 #define tilesCGBPal3c3 0
 
@@ -99,8 +99,16 @@
 #define tilesCGBPal7c1 8935
 #define tilesCGBPal7c2 6596
 #define tilesCGBPal7c3 5344
-/* Start of tile array. */
-extern const unsigned char tiles[];
+extern const unsigned char tilesTLE0[];
+extern const unsigned char tilesTLE1[];
+extern const unsigned char tilesTLE2[];
+extern const unsigned char tilesTLE3[];
+extern const unsigned char tilesTLE4[];
+extern const unsigned char tilesTLE5[];
+extern const unsigned char tilesTLE6[];
+extern const unsigned char tilesTLE7[];
+extern const unsigned char tilesTLE8[];
+extern const unsigned char tilesTLE9[];
 
 #endif
 

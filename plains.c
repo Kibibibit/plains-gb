@@ -5,9 +5,9 @@
 #include "sprites.h"
 #include "tiles.h"
 #include "entity.h"
+#include "player.h"
 #include "fixed.h"
 #include "constants.h"
-
 
 const palette_color_t palettes[] = {
     spritesCGBPal0c0,
@@ -47,47 +47,51 @@ const palette_color_t bkg_palettes[] = {
     tilesCGBPal3c3,
 };
 
+const uint8_t test_floor[] = {
+    TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG,TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG};
+const uint8_t test_floor_prop[] = {
+    TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1,TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1};
 
-int main() {
+int main()
+{
 
     init_bkg(0);
     init_win(0);
 
     SHOW_SPRITES;
-    SHOW_BKG;    
+    SHOW_BKG;
 
-    set_sprite_data(0x1,12,sprites);
-    set_bkg_data(0x0,10,tiles);
-    set_sprite_palette(0x0,4,palettes);
-    set_bkg_palette(0,4,bkg_palettes);
+    set_sprite_data(0x1, 12, sprites);
+    set_bkg_data(TILE_INDEX_BLANK, 1, tilesTLE0);
+    set_bkg_data(TILE_INDEX_SKY_BG, 1, tilesTLE1);
+    set_bkg_data(TILE_INDEX_DIRT_BG, 1, tilesTLE2);
+    set_bkg_data(TILE_INDEX_DIRT_BG_TL, 1, tilesTLE3);
+    set_bkg_data(TILE_INDEX_DIRT_BG_L, 1, tilesTLE4);
+    set_bkg_data(TILE_INDEX_DIRT_BG_BL, 1, tilesTLE5);
+    set_bkg_data(TILE_INDEX_DIRT_FG, 1, tilesTLE6);
+    set_bkg_data(TILE_INDEX_GRASS_FG, 1, tilesTLE7);
+    set_bkg_data(TILE_INDEX_DIRT_BREAK, 1, tilesTLE8); 
+    set_bkg_data(TILE_INDEX_STONE_BREAK, 1, tilesTLE9);
+    set_sprite_palette(0x0, 4, palettes);
+    set_bkg_palette(0, 4, bkg_palettes);
 
-    
+    set_bkg_tiles(0, 11, 20, 1, test_floor);
+    set_bkg_props(0, 11, 20, 1, test_floor_prop);
+    set_bkg_tiles(0, 7, 10, 1, test_floor);
+    set_bkg_props(0, 7 ,10, 1, test_floor_prop);
+    set_bkg_tile_xy(10, 10, TILE_INDEX_GRASS_FG);
+    set_bkg_tile_xy(10, 11, TILE_INDEX_DIRT_FG);
+    set_bkg_prop_xy(10, 10, TILE_PAL_INDEX_FG_1);
 
-    entity_t * player = create_entity(SPR_INDEX_KNIGHT_0, 0x0);
-    entity_move(player, 8, 16);
+    player_t *player = player_create();
+    entity_move((entity_t *)player, 8, 96);
 
-    fixed_t test;
-    test = new_fixed(-5,128);
 
-    fixed_t test2;
-    test2 = new_fixed(4,128);
+    while (1)
+    {
 
-    fixed_t out;
-    out.w = test2.w + test.w;
-
-    BGB_printf("%d.%d %d %x", test.h, test.l, test.w, test.w);
-    BGB_printf("%d.%d %d %x", test2.h, test2.l, test2.w, test2.w);
-    BGB_printf("%d.%d %d %x", out.h, out.l, out.w, out.w);
-    BGB_printf("%d",test.w+test2.w);
-
-    while(1) {
-
-        entity_update(player);
-        entity_draw(player);
-        
+        player_update(player);
+        entity_draw((entity_t *)player);
         wait_vbl_done();
-        
     }
-
 }
-
