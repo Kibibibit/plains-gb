@@ -28,6 +28,15 @@
 #define TILE_INDEX_DIRT_FG      0x8
 #define TILE_INDEX_GRASS_FG     0x9
 
+#define SPR_PAL_INDEX_KNIGHT    0x0
+#define SPR_PAL_INDEX_BLORB     0x1
+#define SPR_PAL_INDEX_BEETO     0x2
+#define SPR_PAL_INDEX_BOSS      0x3
+
+#define TILE_PAL_INDEX_BLANK    0x0
+#define TILE_PAL_INDEX_BG_0     0x1
+#define TILE_PAL_INDEX_FG_1     0x2
+
 
 
 #endif
