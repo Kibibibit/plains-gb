@@ -28,5 +28,6 @@ void player_update_grounded(player_t * player, uint8_t input);
 void player_update_walk(player_t * player, uint8_t input);
 void player_move(player_t * player, uint8_t input, int8_t speed, uint8_t friction);
 void player_update_drop(player_t * player, uint8_t input);
+uint8_t player_bounce_tile(player_t * player);
 
 #endif

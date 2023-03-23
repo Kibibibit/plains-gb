@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 12
+  Tiles                : 0 to 15
 
   Palette colors       : Included.
   SGB Palette          : None.
@@ -77,10 +77,10 @@
 #define spritesCGBPal3c3 0
 
 /* Gameboy Color palette 4 */
-#define spritesCGBPal4c0 6076
-#define spritesCGBPal4c1 8935
-#define spritesCGBPal4c2 6596
-#define spritesCGBPal4c3 5344
+#define spritesCGBPal4c0 32767
+#define spritesCGBPal4c1 26425
+#define spritesCGBPal4c2 15855
+#define spritesCGBPal4c3 5285
 
 /* Gameboy Color palette 5 */
 #define spritesCGBPal5c0 6076
@@ -114,6 +114,9 @@
 #define spritesCGB10 0
 #define spritesCGB11 0
 #define spritesCGB12 0
+#define spritesCGB13 4
+#define spritesCGB14 4
+#define spritesCGB15 4
 /* Start of tile array. */
 extern const unsigned char sprites[];
 

@@ -26,6 +26,10 @@ const palette_color_t palettes[] = {
     spritesCGBPal3c1,
     spritesCGBPal3c2,
     spritesCGBPal3c3,
+    spritesCGBPal4c0,
+    spritesCGBPal4c1,
+    spritesCGBPal4c2,
+    spritesCGBPal4c3,
 };
 
 const palette_color_t bkg_palettes[] = {
@@ -48,9 +52,9 @@ const palette_color_t bkg_palettes[] = {
 };
 
 const uint8_t test_floor[] = {
-    TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG,TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG};
+    TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG, TILE_INDEX_GRASS_FG};
 const uint8_t test_floor_prop[] = {
-    TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1,TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1};
+    TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1, TILE_PAL_INDEX_FG_1};
 
 int main()
 {
@@ -70,22 +74,27 @@ int main()
     set_bkg_data(TILE_INDEX_DIRT_BG_BL, 1, tilesTLE5);
     set_bkg_data(TILE_INDEX_DIRT_FG, 1, tilesTLE6);
     set_bkg_data(TILE_INDEX_GRASS_FG, 1, tilesTLE7);
-    set_bkg_data(TILE_INDEX_DIRT_BREAK, 1, tilesTLE8); 
+    set_bkg_data(TILE_INDEX_DIRT_BREAK, 1, tilesTLE8);
     set_bkg_data(TILE_INDEX_STONE_BREAK, 1, tilesTLE9);
-    set_sprite_palette(0x0, 4, palettes);
+    set_sprite_palette(0x0, 5, palettes);
     set_bkg_palette(0, 4, bkg_palettes);
 
     set_bkg_tiles(0, 11, 20, 1, test_floor);
     set_bkg_props(0, 11, 20, 1, test_floor_prop);
     set_bkg_tiles(0, 7, 10, 1, test_floor);
-    set_bkg_props(0, 7 ,10, 1, test_floor_prop);
+    set_bkg_props(0, 7, 10, 1, test_floor_prop);
     set_bkg_tile_xy(10, 10, TILE_INDEX_GRASS_FG);
     set_bkg_tile_xy(10, 11, TILE_INDEX_DIRT_FG);
     set_bkg_prop_xy(10, 10, TILE_PAL_INDEX_FG_1);
+    set_bkg_tile_xy(11, 10, TILE_INDEX_DIRT_BREAK);
+    set_bkg_prop_xy(11, 10, TILE_PAL_INDEX_FG_1);
+    set_bkg_tile_xy(11, 9, TILE_INDEX_DIRT_BREAK);
+    set_bkg_prop_xy(11, 9, TILE_PAL_INDEX_FG_1);
+    set_bkg_tile_xy(11, 8, TILE_INDEX_DIRT_BREAK);
+    set_bkg_prop_xy(11, 8, TILE_PAL_INDEX_FG_1);
 
     player_t *player = player_create();
     entity_move((entity_t *)player, 8, 96);
-
 
     while (1)
     {

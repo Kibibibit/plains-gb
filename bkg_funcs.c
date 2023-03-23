@@ -44,3 +44,16 @@ uint8_t solid_at(uint8_t x, uint8_t y) {
     out = out & SOLID_FLAG;
     return out == SOLID_FLAG;
 }
+
+uint8_t break_at(uint8_t x, uint8_t y) {
+    uint8_t out = tile_at(x,y);
+    out = out & BREAK_FLAG;
+    return out == BREAK_FLAG;
+}
+
+void break_tile(uint8_t x, uint8_t y) {
+    uint8_t x0 = tile_x(x);
+    uint8_t y0 = tile_y(y);
+    set_bkg_tile_xy(x0,y0, TILE_INDEX_SKY_BG);
+    set_bkg_prop_xy(x0,y0, TILE_PAL_INDEX_BLANK);
+}

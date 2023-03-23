@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "fixed.h"
 #include "constants.h"
+#include "bkg_funcs.h"
 
 player_t *player_create()
 {
@@ -18,14 +19,16 @@ player_t *player_create()
 
 void player_update(player_t *player)
 {
-
-    if (player->entity.dy.h > 0)
+    if (player->state != PLAYER_STATE_DROP)
     {
-        player->state = PLAYER_STATE_FALL;
-    }
-    else if (player->entity.dy.w < 0)
-    {
-        player->state = PLAYER_STATE_JUMP;
+        if (player->entity.dy.h > 0)
+        {
+            player->state = PLAYER_STATE_FALL;
+        }
+        else if (player->entity.dy.w < 0)
+        {
+            player->state = PLAYER_STATE_JUMP;
+        }
     }
 
     uint8_t input = joypad();
@@ -44,6 +47,9 @@ void player_update(player_t *player)
     case PLAYER_STATE_WALK:
         player_update_walk(player, input);
         break;
+    case PLAYER_STATE_DROP:
+        player_update_drop(player, input);
+        break;
     default:
         player->state = PLAYER_STATE_FALL;
         break;
@@ -58,7 +64,13 @@ void player_update_fall(player_t *player, uint8_t input)
 
     player_move(player, input, 2, 10);
 
-    if (on_floor((entity_t *)player)) {
+    if ((input & J_DOWN) > 0)
+    {
+        player->state = PLAYER_STATE_DROP;
+    }
+
+    if (on_floor((entity_t *)player))
+    {
         player->state = PLAYER_STATE_GROUNDED;
     }
 }
@@ -68,7 +80,13 @@ void player_update_jump(player_t *player, uint8_t input)
 
     player_move(player, input, 2, 10);
 
-    if (on_floor((entity_t *)player)) {
+    if ((input & J_DOWN) > 0)
+    {
+        player->state = PLAYER_STATE_DROP;
+    }
+
+    if (on_floor((entity_t *)player))
+    {
         player->state = PLAYER_STATE_GROUNDED;
     }
 
@@ -106,23 +124,25 @@ void player_update_walk(player_t *player, uint8_t input)
     uint8_t frame = player->entity.timer >> 2;
     frame = frame % 4;
     uint8_t index = SPR_INDEX_KNIGHT_0;
-    switch (frame) {
-        case 0x1:
-            index = SPR_INDEX_KNIGHT_1;
-            break;
-        case 0x2:
-            index = SPR_INDEX_KNIGHT_0;
-            break;
-        case 0x3:
-            index = SPR_INDEX_KNIGHT_2;
-            break;
+    switch (frame)
+    {
+    case 0x1:
+        index = SPR_INDEX_KNIGHT_1;
+        break;
+    case 0x2:
+        index = SPR_INDEX_KNIGHT_0;
+        break;
+    case 0x3:
+        index = SPR_INDEX_KNIGHT_2;
+        break;
     }
 
     entity_set_tile((entity_t *)player, index);
 
     player_move(player, input, 2, 2);
 
-    if (player->entity.dx.w == 0) {
+    if (player->entity.dx.w == 0)
+    {
         player->state = PLAYER_STATE_GROUNDED;
     }
 }
@@ -147,11 +167,50 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
     else
     {
         player->entity.dx.w = player->entity.dx.w / friction;
-        if (player->entity.dx.h == -1 && player->entity.dx.l > 128) {
+        if (player->entity.dx.h == -1 && player->entity.dx.l > 128)
+        {
             player->entity.dx.w = 0;
         }
-        if (player->entity.dx.h == 0 && player->entity.dx.l < 128) {
+        if (player->entity.dx.h == 0 && player->entity.dx.l < 128)
+        {
             player->entity.dx.w = 0;
         }
+    }
+}
+
+uint8_t player_bounce_tile(player_t *player)
+{
+    uint8_t x1, y1, x;
+    x = player->entity.x.h;
+    x1 = x + player->entity.width - 1;
+    y1 = player->entity.y.h + player->entity.height + 1;
+    return break_at(x, y1) | break_at(x1, y1);
+}
+
+void player_update_drop(player_t *player, uint8_t input)
+{
+    entity_set_tile((entity_t *)player, SPR_INDEX_KNIGHT_3);
+
+    player_move(player, input, 2, 10);
+
+    if (player_bounce_tile(player))
+    {
+        player->entity.dy.h = PLAYER_JUMP_DYH;
+        player->entity.dy.l = PLAYER_JUMP_DYL;
+        uint8_t x1, y1, x;
+        x = player->entity.x.h;
+        x1 = x + player->entity.width - 1;
+        y1 = player->entity.y.h + player->entity.height + 1;
+        if (break_at(x,y1)) {
+            break_tile(x,y1);
+        }
+        if (break_at(x1,y1)) {
+            break_tile(x1,y1);
+        }
+
+    }
+    else if (on_floor((entity_t *)player))
+    {
+        player->state = PLAYER_STATE_GROUNDED;
     }
 }

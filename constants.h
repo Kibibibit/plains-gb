@@ -3,6 +3,7 @@
 
 
 #define SOLID_FLAG 0x8
+#define BREAK_FLAG 0x10
 
 #define SPR_INDEX_BLANK     0x0
 #define SPR_INDEX_KNIGHT_0  0x1
@@ -34,6 +35,7 @@
 #define SPR_PAL_INDEX_BLORB     0x1
 #define SPR_PAL_INDEX_BEETO     0x2
 #define SPR_PAL_INDEX_BOSS      0x3
+#define SPR_PAL_INDEX_DUST      0x4
 
 #define TILE_PAL_INDEX_BLANK    0x0
 #define TILE_PAL_INDEX_BG_0     0x1

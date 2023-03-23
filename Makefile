@@ -1,6 +1,6 @@
 CC	= ${GBDK}/bin/lcc -Wa-l -Wl-m -Wl-j
 
-BINS	= plains.gb
+BINS	= plains.gbc
 
 all:	$(BINS)
 
@@ -19,5 +19,5 @@ all:	$(BINS)
 clean:
 	rm -f *.o *.lst *.map *.gb *~ *.rel *.cdb *.ihx *.lnk *.sym *.asm *.noi *.adb *.gbc
 
-plains.gb: plains.o maths.o fixed.o sprites.o tiles.o bkg_funcs.o entity.o player.o
-	$(CC) $(CFLAGS) -Wm-yC -o plains.gb plains.o maths.o fixed.o sprites.o tiles.o bkg_funcs.o entity.o player.o
+plains.gbc: plains.o maths.o fixed.o sprites.o tiles.o bkg_funcs.o entity.o player.o
+	$(CC) $(CFLAGS) -Wm-yC -o plains.gbc plains.o maths.o fixed.o sprites.o tiles.o bkg_funcs.o entity.o player.o

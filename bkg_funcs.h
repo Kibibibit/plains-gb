@@ -11,4 +11,6 @@ uint8_t tile_x(uint8_t x);
 uint8_t tile_y(uint8_t y);
 uint8_t tile_at(uint8_t x, uint8_t y);
 uint8_t solid_at(uint8_t x, uint8_t y);
+uint8_t break_at(uint8_t x, uint8_t y);
+void break_tile(uint8_t x, uint8_t y);
 #endif
