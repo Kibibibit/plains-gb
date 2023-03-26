@@ -4,10 +4,11 @@
 #include "bkg_funcs.h"
 #include "sprites.h"
 #include "tiles.h"
-#include "entity.h"
 #include "player.h"
 #include "fixed.h"
 #include "constants.h"
+#include "game_object.h"
+#include "frame_constants.h"
 
 const palette_color_t palettes[] = {
     spritesCGBPal0c0,
@@ -65,7 +66,7 @@ int main()
     SHOW_SPRITES;
     SHOW_BKG;
 
-    set_sprite_data(0x1, 12, sprites);
+    set_sprite_data(0x1, 20, sprites);
     set_bkg_data(TILE_INDEX_BLANK, 1, tilesTLE0);
     set_bkg_data(TILE_INDEX_SKY_BG, 1, tilesTLE1);
     set_bkg_data(TILE_INDEX_DIRT_BG, 1, tilesTLE2);
@@ -93,14 +94,29 @@ int main()
     set_bkg_tile_xy(11, 8, TILE_INDEX_DIRT_BREAK);
     set_bkg_prop_xy(11, 8, TILE_PAL_INDEX_FG_1);
 
-    player_t *player = player_create();
-    entity_move((entity_t *)player, 8, 96);
+    game_object_t * player = create_game_object();
+
+    game_object_t * player2 = create_game_object();
+
+    player->x.h = 8;
+    player->y.h = 16;
+    player->facing_left = 0x0;
+    game_object_set_frame(player, shovel_frame_idle);
+
+    player2->oam = 0x4;
+    player2->x.h = 8;
+    player2->y.h = 32;
+    player2->facing_left = 0x1;
+    game_object_set_frame(player2, shovel_frame_idle);
+    game_object_set_prop(player2, 0b00100000);
+
+
+    game_object_draw(player);
+    game_object_draw(player2);
 
     while (1)
     {
-
-        player_update(player);
-        entity_draw((entity_t *)player);
+        
         wait_vbl_done();
     }
 }

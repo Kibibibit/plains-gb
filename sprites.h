@@ -10,7 +10,7 @@
   Compression          : None.
   Counter              : None.
   Tile size            : 8 x 8
-  Tiles                : 0 to 15
+  Tiles                : 0 to 19
 
   Palette colors       : Included.
   SGB Palette          : None.
@@ -53,34 +53,34 @@
 #define spritesSGBPal3c3 5344
 
 /* Gameboy Color palette 0 */
-#define spritesCGBPal0c0 32767
-#define spritesCGBPal0c1 665
-#define spritesCGBPal0c2 31754
-#define spritesCGBPal0c3 10240
+#define spritesCGBPal0c0 22975
+#define spritesCGBPal0c1 32767
+#define spritesCGBPal0c2 26144
+#define spritesCGBPal0c3 15360
 
 /* Gameboy Color palette 1 */
-#define spritesCGBPal1c0 32767
-#define spritesCGBPal1c1 321
-#define spritesCGBPal1c2 2848
-#define spritesCGBPal1c3 1664
+#define spritesCGBPal1c0 6076
+#define spritesCGBPal1c1 8935
+#define spritesCGBPal1c2 6596
+#define spritesCGBPal1c3 5344
 
 /* Gameboy Color palette 2 */
-#define spritesCGBPal2c0 32767
-#define spritesCGBPal2c1 21631
-#define spritesCGBPal2c2 4110
-#define spritesCGBPal2c3 5140
+#define spritesCGBPal2c0 6076
+#define spritesCGBPal2c1 8935
+#define spritesCGBPal2c2 6596
+#define spritesCGBPal2c3 5344
 
 /* Gameboy Color palette 3 */
-#define spritesCGBPal3c0 32767
-#define spritesCGBPal3c1 31
-#define spritesCGBPal3c2 10570
-#define spritesCGBPal3c3 0
+#define spritesCGBPal3c0 6076
+#define spritesCGBPal3c1 8935
+#define spritesCGBPal3c2 6596
+#define spritesCGBPal3c3 5344
 
 /* Gameboy Color palette 4 */
-#define spritesCGBPal4c0 32767
-#define spritesCGBPal4c1 26425
-#define spritesCGBPal4c2 15855
-#define spritesCGBPal4c3 5285
+#define spritesCGBPal4c0 6076
+#define spritesCGBPal4c1 8935
+#define spritesCGBPal4c2 6596
+#define spritesCGBPal4c3 5344
 
 /* Gameboy Color palette 5 */
 #define spritesCGBPal5c0 6076
@@ -105,18 +105,22 @@
 #define spritesCGB1 0
 #define spritesCGB2 0
 #define spritesCGB3 0
-#define spritesCGB4 1
-#define spritesCGB5 1
-#define spritesCGB6 2
-#define spritesCGB7 2
-#define spritesCGB8 2
-#define spritesCGB9 1
+#define spritesCGB4 0
+#define spritesCGB5 0
+#define spritesCGB6 0
+#define spritesCGB7 0
+#define spritesCGB8 0
+#define spritesCGB9 0
 #define spritesCGB10 0
 #define spritesCGB11 0
 #define spritesCGB12 0
-#define spritesCGB13 4
-#define spritesCGB14 4
-#define spritesCGB15 4
+#define spritesCGB13 0
+#define spritesCGB14 0
+#define spritesCGB15 0
+#define spritesCGB16 0
+#define spritesCGB17 0
+#define spritesCGB18 0
+#define spritesCGB19 0
 /* Start of tile array. */
 extern const unsigned char sprites[];
 
