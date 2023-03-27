@@ -27,6 +27,7 @@ game_object_t *create_game_object()
     out->lr = 0x08;
     out->oam = 0x0;
     out->frame = blank_frame;
+    out->do_draw = 0x1;
 
     return out;
 }
@@ -37,83 +38,94 @@ void destroy_game_object(game_object_t *object)
 }
 void game_object_update(game_object_t *object)
 {
+    uint8_t x = object->x.h;
+    uint8_t y = object->y.h;
+
     object->timer++;
-    if (!game_object_on_floor(object))
+    if (object->dy.w != 0)
     {
         object->dy.w += GRAVITY;
-        if (object->dy.h > 7)
+    }
+    else if (!game_object_on_floor(object))
+    {
+        object->dy.w += GRAVITY;
+    }
+
+    if (object->dy.w != 0)
+    {
+        if (game_object_vert_will_collide(object))
         {
-            object->dy.h = 7;
+            object->y = ufixed_floor(object->y);
+            int8_t s = sign(object->dy.h);
+            uint8_t r = ufixed_ceil(fixed_abs(object->dy)).h;
+            object->dy.h = s;
             object->dy.l = 0;
+            for (*iter_y = 0; *iter_y < r; *iter_y = *iter_y + 1)
+            {
+                if (!game_object_vert_will_collide(object))
+                {
+                    object->y.h += s;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            object->dy.w = 0;
+        }
+        else
+        {
+            object->y.w += object->dy.w;
         }
     }
 
-    if (game_object_vert_will_collide(object))
+    if (object->dx.w != 0)
     {
-        object->y = ufixed_floor(object->y);
-        int8_t s = sign(object->dy.h);
-        uint8_t r = ufixed_ceil(fixed_abs(object->dy)).h;
-        object->dy.h = s;
-        object->dy.l = 0;
-        for (*iter_y = 0; *iter_y < r; *iter_y = *iter_y + 1)
+        if (game_object_hori_will_collide(object))
         {
-            if (!game_object_vert_will_collide(object))
+            object->x = ufixed_floor(object->x);
+            int8_t s = sign(object->dx.h);
+            uint8_t r = ufixed_ceil(fixed_abs(object->dx)).h;
+            object->dx.h = s;
+            object->dx.l = 0;
+            for (*iter_x = 0; *iter_x < r; *iter_x = *iter_x + 1)
             {
-                object->y.h += s;
+                if (!game_object_hori_will_collide(object))
+                {
+                    object->x.h += s;
+                }
+                else
+                {
+                    break;
+                }
             }
-            else
-            {
-                break;
-            }
+            object->dx.w = 0;
         }
-        object->dy.w = 0;
-    }
-    else
-    {
-        object->y.w += object->dy.w;
-    }
-    if (game_object_hori_will_collide(object))
-    {
-        object->x = ufixed_floor(object->x);
-        int8_t s = sign(object->dx.h);
-        uint8_t r = ufixed_ceil(fixed_abs(object->dx)).h;
-        object->dx.h = s;
-        object->dx.l = 0;
-        for (*iter_x = 0; *iter_x < r; *iter_x = *iter_x + 1)
+        else
         {
-            if (!game_object_hori_will_collide(object))
-            {
-                object->x.h += s;
-            }
-            else
-            {
-                break;
-            }
+            object->x.w += object->dx.w;
         }
-        object->dx.w = 0;
     }
-    else
+    if (object->x.h != x || object->y.h != y)
     {
-        object->x.w += object->dx.w;
+        object->do_draw = 0x1;
     }
 }
 void game_object_set_prop(game_object_t *object, uint8_t prop)
 {
-    uint8_t i;
-    for (i = 0; i < object->frame->tile_count; i++)
+    for (*iter_i = 0; *iter_i < object->frame->tile_count; *iter_i = *iter_i + 1)
     {
-        set_sprite_prop(object->oam + i, prop);
+        set_sprite_prop(object->oam + *iter_i, prop);
     }
 }
 
 void game_object_clear_oam(game_object_t *object)
 {
-    uint8_t i;
-    for (i = 0; i < object->frame->tile_count; i++)
+    for (*iter_i = 0; *iter_i < object->frame->tile_count; *iter_i = *iter_i + 1)
     {
-        set_sprite_tile(object->oam + i, SPR_BLANK);
-        move_sprite(object->oam + i, 0, 0);
-        set_sprite_prop(object->oam + i, 0);
+        set_sprite_tile(object->oam + *iter_i, SPR_BLANK);
+        move_sprite(object->oam + *iter_i, 0, 0);
+        set_sprite_prop(object->oam + *iter_i, 0);
     }
 }
 
@@ -123,40 +135,43 @@ void game_object_set_frame(game_object_t *object, const frame_t *frame)
     {
         game_object_clear_oam(object);
     }
-    uint8_t i;
     object->frame = frame;
-    for (i = 0; i < object->frame->tile_count; i++)
+    for (*iter_i = 0; *iter_i < object->frame->tile_count; *iter_i = *iter_i + 1)
     {
-        set_sprite_tile(object->oam + i, frame->tiles[i]);
+        set_sprite_tile(object->oam + *iter_i, frame->tiles[*iter_i]);
     }
 }
 
 void game_object_draw(game_object_t *object)
 {
-    *iter_i = 0;
-
-    uint8_t xx = 0x0;
-    uint8_t yy = 0x0;
-
-    uint8_t x_tiles = FRAME_X_TILES(object->frame);
-
-    for (*iter_y = 0; *iter_y < FRAME_Y_TILES(object->frame); *iter_y = *iter_y + 1)
+    if (object->do_draw)
     {
-        for (*iter_x = 0; *iter_x < x_tiles; *iter_x = *iter_x + 1)
-        {
-            if (object->facing_left)
-            {
-                xx = object->x.h + ((x_tiles - 1 - *iter_x) << 3);
-            }
-            else
-            {
-                xx = object->x.h + (*iter_x << 3);
-            }
+        *iter_i = 0;
 
-            yy = object->y.h + (*iter_y << 3);
-            move_sprite(object->oam + *iter_i, xx, yy);
-            *iter_i = *iter_i + 1;
+        uint8_t xx = 0x0;
+        uint8_t yy = 0x0;
+        uint8_t y_tiles = FRAME_Y_TILES(object->frame);
+        uint8_t x_tiles = FRAME_X_TILES(object->frame);
+
+        for (*iter_y = 0; *iter_y < y_tiles; *iter_y = *iter_y + 1)
+        {
+            for (*iter_x = 0; *iter_x < x_tiles; *iter_x = *iter_x + 1)
+            {
+                if (object->facing_left)
+                {
+                    xx = object->x.h + ((x_tiles - 1 - *iter_x) << 3);
+                }
+                else
+                {
+                    xx = object->x.h + (*iter_x << 3);
+                }
+
+                yy = object->y.h + (*iter_y << 3);
+                move_sprite(object->oam + *iter_i, xx, yy);
+                *iter_i = *iter_i + 1;
+            }
         }
+        object->do_draw = 0x0;
     }
 }
 
@@ -167,7 +182,7 @@ uint8_t game_object_vert_will_collide(game_object_t *object)
     uint8_t y0 = y.h + OBJECT_TOP(object);
     uint8_t y1 = y.h + OBJECT_BOTTOM(object);
     uint8_t x0 = object->x.h;
-    for (*iter_x = OBJECT_LEFT(object); *iter_x < OBJECT_RIGHT(object); *iter_x = *iter_x + 4)
+    for (*iter_x = OBJECT_LEFT(object); *iter_x < OBJECT_RIGHT(object); *iter_x = *iter_x + 7)
     {
         if (solid_at(x0 + *iter_x, y0) || solid_at(x0 + *iter_x, y1))
         {
@@ -184,7 +199,7 @@ uint8_t game_object_hori_will_collide(game_object_t *object)
     uint8_t x0 = x.h + OBJECT_LEFT(object);
     uint8_t x1 = x.h + OBJECT_RIGHT(object);
     uint8_t y0 = object->y.h;
-    for (*iter_y = OBJECT_TOP(object); *iter_y < OBJECT_BOTTOM(object); *iter_y = *iter_y + 4)
+    for (*iter_y = OBJECT_TOP(object); *iter_y < OBJECT_BOTTOM(object); *iter_y = *iter_y + 7)
     {
         if (solid_at(x0, y0 + *iter_y) || solid_at(x1, y0 + *iter_y))
         {
