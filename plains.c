@@ -94,29 +94,16 @@ int main()
     set_bkg_tile_xy(11, 8, TILE_INDEX_DIRT_BREAK);
     set_bkg_prop_xy(11, 8, TILE_PAL_INDEX_FG_1);
 
-    game_object_t * player = create_game_object();
 
-    game_object_t * player2 = create_game_object();
-
-    player->x.h = 8;
-    player->y.h = 16;
-    player->facing_left = 0x0;
-    game_object_set_frame(player, shovel_frame_idle);
-
-    player2->oam = 0x4;
-    player2->x.h = 8;
-    player2->y.h = 32;
-    player2->facing_left = 0x1;
-    game_object_set_frame(player2, shovel_frame_idle);
-    game_object_set_prop(player2, 0b00100000);
-
-
-    game_object_draw(player);
-    game_object_draw(player2);
+    player_t * player = player_create();
+    player->object->oam = 0x0;
+    player->object->x.h = 40;
+    player->object->y.h = 40;
 
     while (1)
     {
-        
+        player_update(player);
+        game_object_draw(player->object);
         wait_vbl_done();
     }
 }

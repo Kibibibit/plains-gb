@@ -5,6 +5,8 @@
 #define SOLID_FLAG 0x8
 #define BREAK_FLAG 0x10
 
+#define PROP_HORI_FLIP 0b00100000
+
 #define SPR_INDEX_BLANK     0x0
 #define SPR_INDEX_KNIGHT_0  0x1
 #define SPR_INDEX_KNIGHT_1  0x2

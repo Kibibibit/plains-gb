@@ -2,16 +2,19 @@
 #include <stdlib.h>
 #include <gb/gb.h>
 #include "player.h"
-#include "entity.h"
+#include "game_object.h"
 #include "fixed.h"
 #include "constants.h"
 #include "bkg_funcs.h"
+#include "macros.h"
+#include "frame_constants.h"
 
 player_t *player_create()
 {
     player_t *out = (player_t *)malloc(sizeof(player_t));
-    out = (player_t *)create_entity(SPR_INDEX_KNIGHT_0, 0);
-    out->entity.width = 6;
+    out->object = create_game_object();
+    out->object->lr = 0x44;
+    out->object->tb = 0x00;
     out->health = 0;
     out->state = PLAYER_STATE_FALL;
     return out;
@@ -21,11 +24,11 @@ void player_update(player_t *player)
 {
     if (player->state != PLAYER_STATE_DROP)
     {
-        if (player->entity.dy.h > 0)
+        if (player->object->dy.h > 0)
         {
             player->state = PLAYER_STATE_FALL;
         }
-        else if (player->entity.dy.w < 0)
+        else if (player->object->dy.w < 0)
         {
             player->state = PLAYER_STATE_JUMP;
         }
@@ -55,12 +58,12 @@ void player_update(player_t *player)
         break;
     };
 
-    entity_update((entity_t *)player);
+    game_object_update(player->object);
 }
 
 void player_update_fall(player_t *player, uint8_t input)
 {
-    entity_set_tile((entity_t *)player, SPR_INDEX_KNIGHT_2);
+    game_object_set_frame(player->object, shovel_frame_jump);
 
     player_move(player, input, 2, 10);
 
@@ -69,14 +72,14 @@ void player_update_fall(player_t *player, uint8_t input)
         player->state = PLAYER_STATE_DROP;
     }
 
-    if (on_floor((entity_t *)player))
+    if (game_object_on_floor(player->object))
     {
         player->state = PLAYER_STATE_GROUNDED;
     }
 }
 void player_update_jump(player_t *player, uint8_t input)
 {
-    entity_set_tile((entity_t *)player, SPR_INDEX_KNIGHT_1);
+    game_object_set_frame(player->object, shovel_frame_jump);
 
     player_move(player, input, 2, 10);
 
@@ -85,29 +88,29 @@ void player_update_jump(player_t *player, uint8_t input)
         player->state = PLAYER_STATE_DROP;
     }
 
-    if (on_floor((entity_t *)player))
+    if (game_object_on_floor(player->object))
     {
         player->state = PLAYER_STATE_GROUNDED;
     }
 
-    if (player->entity.dy.h > 0)
+    if (player->object->dy.h > 0)
     {
         player->state = PLAYER_STATE_FALL;
     }
 }
 void player_update_grounded(player_t *player, uint8_t input)
 {
-    entity_set_tile((entity_t *)player, SPR_INDEX_KNIGHT_0);
+    game_object_set_frame(player->object, shovel_frame_idle);
 
     if (((input & J_A) > 0))
     {
-        player->entity.dy.h = PLAYER_JUMP_DYH;
-        player->entity.dy.l = PLAYER_JUMP_DYL;
+        player->object->dy.h = PLAYER_JUMP_DYH;
+        player->object->dy.l = PLAYER_JUMP_DYL;
     }
 
     player_move(player, input, 2, 2);
 
-    if (player->entity.dx.w != 0)
+    if (player->object->dx.w != 0)
     {
         player->state = PLAYER_STATE_WALK;
     }
@@ -116,32 +119,32 @@ void player_update_walk(player_t *player, uint8_t input)
 {
     if (((input & J_A) > 0))
     {
-        player->entity.dy.h = PLAYER_JUMP_DYH;
-        player->entity.dy.l = PLAYER_JUMP_DYL;
+        player->object->dy.h = PLAYER_JUMP_DYH;
+        player->object->dy.l = PLAYER_JUMP_DYL;
         return;
     }
 
-    uint8_t frame = player->entity.timer >> 2;
-    frame = frame % 4;
-    uint8_t index = SPR_INDEX_KNIGHT_0;
-    switch (frame)
+    uint8_t frame_i = player->object->timer >> 3;
+    frame_i = frame_i % 4;
+    const frame_t *frame = shovel_frame_idle;
+    switch (frame_i)
     {
     case 0x1:
-        index = SPR_INDEX_KNIGHT_1;
+        frame = shovel_frame_walk_1;
         break;
     case 0x2:
-        index = SPR_INDEX_KNIGHT_0;
+        frame = shovel_frame_idle;
         break;
     case 0x3:
-        index = SPR_INDEX_KNIGHT_2;
+        frame = shovel_frame_walk_2;
         break;
     }
 
-    entity_set_tile((entity_t *)player, index);
+    game_object_set_frame(player->object, frame);
 
     player_move(player, input, 2, 2);
 
-    if (player->entity.dx.w == 0)
+    if (player->object->dx.w == 0)
     {
         player->state = PLAYER_STATE_GROUNDED;
     }
@@ -149,31 +152,34 @@ void player_update_walk(player_t *player, uint8_t input)
 
 void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction)
 {
-    uint8_t p = player->entity.props;
+    uint8_t face_left = player->object->facing_left;
+    uint8_t p = player->object->prop;
     if ((input & J_RIGHT))
     {
-        player->entity.dx.h = speed;
+        player->object->dx.h = speed;
 
         // Clear fifth bit
         p = p & (~PROP_HORI_FLIP);
-        entity_set_prop((entity_t *)player, p);
+        player->object->facing_left = 0x0;
+        game_object_set_prop(player->object, p);
     }
     else if ((input & J_LEFT))
     {
-        player->entity.dx.h = -speed;
+        player->object->dx.h = -speed;
         p = p | (PROP_HORI_FLIP);
-        entity_set_prop((entity_t *)player, p);
+        player->object->facing_left = 0x1;
+        game_object_set_prop(player->object, p);
     }
     else
     {
-        player->entity.dx.w = player->entity.dx.w / friction;
-        if (player->entity.dx.h == -1 && player->entity.dx.l > 128)
+        player->object->dx.w = player->object->dx.w / friction;
+        if (player->object->dx.h == -1 && player->object->dx.l > 128)
         {
-            player->entity.dx.w = 0;
+            player->object->dx.w = 0;
         }
-        if (player->entity.dx.h == 0 && player->entity.dx.l < 128)
+        if (player->object->dx.h == 0 && player->object->dx.l < 128)
         {
-            player->entity.dx.w = 0;
+            player->object->dx.w = 0;
         }
     }
 }
@@ -181,26 +187,26 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
 uint8_t player_bounce_tile(player_t *player)
 {
     uint8_t x1, y1, x;
-    x = player->entity.x.h;
-    x1 = x + player->entity.width - 1;
-    y1 = player->entity.y.h + player->entity.height + 1;
+    x = player->object->x.h;
+    x1 = x + 0xF - OBJECT_RIGHT(player->object) - 1;
+    y1 = player->object->y.h + 0xF- OBJECT_BOTTOM(player->object) + 1;
     return break_at(x, y1) | break_at(x1, y1);
 }
 
 void player_update_drop(player_t *player, uint8_t input)
 {
-    entity_set_tile((entity_t *)player, SPR_INDEX_KNIGHT_3);
+    game_object_set_frame(player->object, shovel_frame_drop);
 
     player_move(player, input, 2, 10);
 
     if (player_bounce_tile(player))
     {
-        player->entity.dy.h = PLAYER_JUMP_DYH;
-        player->entity.dy.l = PLAYER_JUMP_DYL;
+        player->object->dy.h = PLAYER_JUMP_DYH;
+        player->object->dy.l = PLAYER_JUMP_DYL;
         uint8_t x1, y1, x;
-        x = player->entity.x.h;
-        x1 = x + player->entity.width - 1;
-        y1 = player->entity.y.h + player->entity.height + 1;
+        x = player->object->x.h;
+        x1 = x + 0xF - OBJECT_RIGHT(player->object) - 1;
+        y1 = player->object->y.h + 0xF - OBJECT_BOTTOM(player->object) + 1;
         if (break_at(x,y1)) {
             break_tile(x,y1);
         }
@@ -209,7 +215,7 @@ void player_update_drop(player_t *player, uint8_t input)
         }
 
     }
-    else if (on_floor((entity_t *)player))
+    else if (game_object_on_floor(player->object))
     {
         player->state = PLAYER_STATE_GROUNDED;
     }

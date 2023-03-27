@@ -2,7 +2,7 @@
 #define PLAYER_H
 
 #include <stdint.h>
-#include "entity.h"
+#include "game_object.h"
 
 #define PLAYER_JUMP_DYH -3
 #define PLAYER_JUMP_DYL 128
@@ -14,7 +14,7 @@
 #define PLAYER_STATE_DROP       0x4
 
 typedef struct {
-    entity_t entity;
+    game_object_t * object;
     uint8_t state;
     uint8_t health;
 } player_t;
