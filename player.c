@@ -8,13 +8,14 @@
 #include "bkg_funcs.h"
 #include "macros.h"
 #include "frame_constants.h"
+#include "iters.h"
 
 player_t *player_create()
 {
     player_t *out = (player_t *)malloc(sizeof(player_t));
     out->object = create_game_object();
-    out->object->lr = 0x44;
-    out->object->tb = 0x00;
+    out->object->lr = 0x4C;
+    out->object->tb = 0x0F;
     out->health = 0;
     out->state = PLAYER_STATE_FALL;
     return out;
@@ -186,11 +187,18 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
 
 uint8_t player_bounce_tile(player_t *player)
 {
-    uint8_t x1, y1, x;
-    x = player->object->x.h;
-    x1 = x + 0xF - OBJECT_RIGHT(player->object) - 1;
-    y1 = player->object->y.h + 0xF- OBJECT_BOTTOM(player->object) + 1;
-    return break_at(x, y1) | break_at(x1, y1);
+    uint8_t y;
+    y = player->object->y.h + 2;
+    uint8_t y0 = y + OBJECT_BOTTOM(player->object);
+    uint8_t x0 = player->object->x.h;
+    for (*iter_x = OBJECT_LEFT(player->object); *iter_x < OBJECT_RIGHT(player->object); *iter_x = *iter_x + 7)
+    {
+        if (break_at(x0 + *iter_x, y0))
+        {
+            return 0x1;
+        }
+    }
+    return break_at(x0 + OBJECT_RIGHT(player->object), y0);
 }
 
 void player_update_drop(player_t *player, uint8_t input)
@@ -203,17 +211,21 @@ void player_update_drop(player_t *player, uint8_t input)
     {
         player->object->dy.h = PLAYER_JUMP_DYH;
         player->object->dy.l = PLAYER_JUMP_DYL;
-        uint8_t x1, y1, x;
-        x = player->object->x.h;
-        x1 = x + 0xF - OBJECT_RIGHT(player->object) - 1;
-        y1 = player->object->y.h + 0xF - OBJECT_BOTTOM(player->object) + 1;
-        if (break_at(x,y1)) {
-            break_tile(x,y1);
+        uint8_t y;
+        y = player->object->y.h + 2;
+        uint8_t y0 = y + OBJECT_BOTTOM(player->object);
+        uint8_t x0 = player->object->x.h;
+        for (*iter_x = OBJECT_LEFT(player->object); *iter_x < OBJECT_RIGHT(player->object); *iter_x = *iter_x + 7)
+        {
+            if (break_at(x0 + *iter_x, y0))
+            {
+                break_tile(x0 + *iter_x, y0);
+            }
         }
-        if (break_at(x1,y1)) {
-            break_tile(x1,y1);
+        if (break_at(x0 + OBJECT_RIGHT(player->object), y0))
+        {
+            break_tile(x0 + OBJECT_RIGHT(player->object), y0);
         }
-
     }
     else if (game_object_on_floor(player->object))
     {

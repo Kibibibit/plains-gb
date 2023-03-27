@@ -31,4 +31,5 @@ fixed_t fixed_floor(fixed_t x);
 ufixed_t ufixed_round(ufixed_t x);
 ufixed_t ufixed_ceil(ufixed_t x);
 ufixed_t ufixed_floor(ufixed_t x);
+ufixed_t fixed_abs(fixed_t x);
 #endif

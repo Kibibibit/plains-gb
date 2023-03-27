@@ -56,3 +56,12 @@ ufixed_t ufixed_floor(ufixed_t x) {
     out.h = x.h;
     return out;
 }
+
+ufixed_t fixed_abs(fixed_t x) {
+    ufixed_t out;
+    ufixed_t mask;
+    mask.w = x.w >> 15;
+    out.w = x.w ^ mask.w;
+    out.w -= mask.w;
+    return out;
+}

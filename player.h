@@ -5,7 +5,7 @@
 #include "game_object.h"
 
 #define PLAYER_JUMP_DYH -3
-#define PLAYER_JUMP_DYL 128
+#define PLAYER_JUMP_DYL 64
 
 #define PLAYER_STATE_FALL       0x0
 #define PLAYER_STATE_JUMP       0x1

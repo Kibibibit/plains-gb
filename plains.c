@@ -94,11 +94,14 @@ int main()
     set_bkg_tile_xy(11, 8, TILE_INDEX_DIRT_BREAK);
     set_bkg_prop_xy(11, 8, TILE_PAL_INDEX_FG_1);
 
+    set_bkg_tiles(0, 12, 20, 1, test_floor);
+    set_bkg_props(0, 12, 20, 1, test_floor_prop);
+
 
     player_t * player = player_create();
     player->object->oam = 0x0;
     player->object->x.h = 40;
-    player->object->y.h = 40;
+    player->object->y.h = 90;
 
     while (1)
     {
