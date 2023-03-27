@@ -17,7 +17,7 @@ player_t *player_create()
     out->object->lr = 0x4C;
     out->object->tb = 0x0F;
     out->health = 0;
-    out->state = PLAYER_STATE_FALL;
+    out->state = PLAYER_STATE_JUMP;
     return out;
 }
 
@@ -27,9 +27,9 @@ void player_update(player_t *player)
     {
         if (player->object->dy.h > 0)
         {
-            player->state = PLAYER_STATE_FALL;
+            player->state = PLAYER_STATE_JUMP;
         }
-        else if (player->object->dy.w < 0)
+        else if (player->object->dy.h < 0)
         {
             player->state = PLAYER_STATE_JUMP;
         }
@@ -39,9 +39,6 @@ void player_update(player_t *player)
 
     switch (player->state)
     {
-    case PLAYER_STATE_FALL:
-        player_update_fall(player, input);
-        break;
     case PLAYER_STATE_GROUNDED:
         player_update_grounded(player, input);
         break;
@@ -55,29 +52,13 @@ void player_update(player_t *player)
         player_update_drop(player, input);
         break;
     default:
-        player->state = PLAYER_STATE_FALL;
+        player->state = PLAYER_STATE_JUMP;
         break;
     };
 
     game_object_update(player->object);
 }
 
-void player_update_fall(player_t *player, uint8_t input)
-{
-    game_object_set_frame(player->object, shovel_frame_jump);
-
-    player_move(player, input, 2, 10);
-
-    if ((input & J_DOWN) > 0)
-    {
-        player->state = PLAYER_STATE_DROP;
-    }
-
-    if (game_object_on_floor(player->object))
-    {
-        player->state = PLAYER_STATE_GROUNDED;
-    }
-}
 void player_update_jump(player_t *player, uint8_t input)
 {
     game_object_set_frame(player->object, shovel_frame_jump);
@@ -87,17 +68,15 @@ void player_update_jump(player_t *player, uint8_t input)
     if ((input & J_DOWN) > 0)
     {
         player->state = PLAYER_STATE_DROP;
+        return;
     }
 
-    if (game_object_on_floor(player->object))
+    if (player->object->on_floor)
     {
         player->state = PLAYER_STATE_GROUNDED;
+        return;
     }
 
-    if (player->object->dy.h > 0)
-    {
-        player->state = PLAYER_STATE_FALL;
-    }
 }
 void player_update_grounded(player_t *player, uint8_t input)
 {
@@ -114,6 +93,7 @@ void player_update_grounded(player_t *player, uint8_t input)
     if (player->object->dx.w != 0)
     {
         player->state = PLAYER_STATE_WALK;
+        return;
     }
 }
 void player_update_walk(player_t *player, uint8_t input)
@@ -148,6 +128,7 @@ void player_update_walk(player_t *player, uint8_t input)
     if (player->object->dx.w == 0)
     {
         player->state = PLAYER_STATE_GROUNDED;
+        return;
     }
 }
 
@@ -227,8 +208,9 @@ void player_update_drop(player_t *player, uint8_t input)
             break_tile(x0 + OBJECT_RIGHT(player->object), y0);
         }
     }
-    else if (game_object_on_floor(player->object))
+    else if (player->object->on_floor)
     {
         player->state = PLAYER_STATE_GROUNDED;
+        return;
     }
 }

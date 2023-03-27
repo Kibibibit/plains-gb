@@ -28,6 +28,7 @@ typedef struct {
     uint8_t tb;
     uint8_t oam;
     uint8_t do_draw;
+    uint8_t on_floor;
 } game_object_t;
 
 game_object_t * create_game_object();

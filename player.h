@@ -7,11 +7,10 @@
 #define PLAYER_JUMP_DYH -3
 #define PLAYER_JUMP_DYL 64
 
-#define PLAYER_STATE_FALL       0x0
-#define PLAYER_STATE_JUMP       0x1
-#define PLAYER_STATE_GROUNDED   0x2
-#define PLAYER_STATE_WALK       0x3
-#define PLAYER_STATE_DROP       0x4
+#define PLAYER_STATE_JUMP       0x0
+#define PLAYER_STATE_GROUNDED   0x1
+#define PLAYER_STATE_WALK       0x2
+#define PLAYER_STATE_DROP       0x3
 
 typedef struct {
     game_object_t * object;
@@ -22,7 +21,6 @@ typedef struct {
 player_t * player_create();
 void player_update(player_t * player);
 
-void player_update_fall(player_t * player, uint8_t input);
 void player_update_jump(player_t * player, uint8_t input);
 void player_update_grounded(player_t * player, uint8_t input);
 void player_update_walk(player_t * player, uint8_t input);

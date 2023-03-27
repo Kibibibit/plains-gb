@@ -27,6 +27,7 @@ game_object_t *create_game_object()
     out->lr = 0x08;
     out->oam = 0x0;
     out->frame = blank_frame;
+    out->on_floor = 0x0;
     out->do_draw = 0x1;
 
     return out;
@@ -45,14 +46,21 @@ void game_object_update(game_object_t *object)
     if (object->dy.w != 0)
     {
         object->dy.w += GRAVITY;
+        object->on_floor = 0x0;
     }
     else if (!game_object_on_floor(object))
     {
         object->dy.w += GRAVITY;
+        object->on_floor = 0x0;
+    } else {
+        object->on_floor = 0x1;
     }
 
     if (object->dy.w != 0)
     {
+        if (object->dy.h > 7) {
+            object->dy.h = 7;
+        }
         if (game_object_vert_will_collide(object))
         {
             object->y = ufixed_floor(object->y);
@@ -131,6 +139,9 @@ void game_object_clear_oam(game_object_t *object)
 
 void game_object_set_frame(game_object_t *object, const frame_t *frame)
 {
+    if (object->frame == frame) {
+        return;
+    }
     if (object->frame->tile_count != frame->tile_count)
     {
         game_object_clear_oam(object);
@@ -181,7 +192,10 @@ uint8_t game_object_vert_will_collide(game_object_t *object)
     y.w = object->y.w + object->dy.w;
     uint8_t y0 = y.h + OBJECT_TOP(object);
     uint8_t y1 = y.h + OBJECT_BOTTOM(object);
+    uint8_t l = OBJECT_LEFT(object);
+    uint8_t r = OBJECT_RIGHT(object);
     uint8_t x0 = object->x.h;
+    uint8_t x1 = x0+r;
     for (*iter_x = OBJECT_LEFT(object); *iter_x < OBJECT_RIGHT(object); *iter_x = *iter_x + 7)
     {
         if (solid_at(x0 + *iter_x, y0) || solid_at(x0 + *iter_x, y1))
@@ -189,7 +203,7 @@ uint8_t game_object_vert_will_collide(game_object_t *object)
             return 0x1;
         }
     }
-    return solid_at(x0 + OBJECT_RIGHT(object), y0) || solid_at(x0 + OBJECT_RIGHT(object), y1);
+    return solid_at(x1, y0) || solid_at(x1, y1);
 }
 
 uint8_t game_object_hori_will_collide(game_object_t *object)
@@ -198,15 +212,18 @@ uint8_t game_object_hori_will_collide(game_object_t *object)
     x.w = object->x.w + object->dx.w;
     uint8_t x0 = x.h + OBJECT_LEFT(object);
     uint8_t x1 = x.h + OBJECT_RIGHT(object);
+    uint8_t b = OBJECT_BOTTOM(object);
+    uint8_t t = OBJECT_TOP(object);
     uint8_t y0 = object->y.h;
-    for (*iter_y = OBJECT_TOP(object); *iter_y < OBJECT_BOTTOM(object); *iter_y = *iter_y + 7)
+    uint8_t y1 = y0+b;
+    for (*iter_y = t; *iter_y < b; *iter_y = *iter_y + 7)
     {
         if (solid_at(x0, y0 + *iter_y) || solid_at(x1, y0 + *iter_y))
         {
             return 0x1;
         }
     }
-    return solid_at(x0, y0 + OBJECT_BOTTOM(object)) || solid_at(x1, y0 + OBJECT_BOTTOM(object));
+    return solid_at(x0, y1) || solid_at(x1, y1);
 }
 
 uint8_t game_object_on_floor(game_object_t *object)
