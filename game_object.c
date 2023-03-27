@@ -1,11 +1,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <gb/gb.h>
+#include <gbdk/emu_debug.h>
 #include "game_object.h"
 #include "frame_constants.h"
 #include "sprite_constants.h"
 #include "fixed.h"
 #include "macros.h"
+#include "iters.h"
 
 game_object_t *create_game_object()
 {
@@ -75,47 +77,25 @@ void game_object_set_frame(game_object_t *object, const frame_t *frame)
 
 void game_object_draw(game_object_t *object)
 {
+    *iter_i = 0;
 
-    uint8_t i;
-    int8_t x = 0;
-    int8_t y = 0;
-    for (i = 0; i < object->frame->tile_count; i++)
+    uint8_t xx = 0x0;
+    uint8_t yy = 0x0;
+
+    uint8_t x_tiles = frame_x_tiles(object->frame);
+
+    for (*iter_y = 0; *iter_y < frame_y_tiles(object->frame); *iter_y = *iter_y+1)
     {
-        int8_t left;
-        if (object->facing_left)
-        {
-            left = -1;
-        }
-        else
-        {
-            left = 1;
-        }
-        uint8_t xx = (object->x.h) + (left * (x << 3));
-        uint8_t yy = (object->y.h) + (left * (y << 3));
-        if (object->facing_left)
-        {
-            xx += 8;
-        }
-
-        move_sprite(object->oam + i, xx, yy);
-
-        if (object->draw_order)
-        {
-            x += 1;
-            if (x > 1 || x < -1)
-            {
-                x = 0;
-                y += left;
+        for (*iter_x = 0;*iter_x < x_tiles; *iter_x = *iter_x+1) {
+            if (object->facing_left) {
+                xx = object->x.h+((x_tiles-1-*iter_x) << 3);
+            } else {
+                xx = object->x.h + (*iter_x << 3);
             }
-        }
-        else
-        {
-            y += 1;
-            if (y > 1)
-            {
-                y = 0;
-                x += left;
-            }
+            
+            yy = object->y.h + (*iter_y << 3);
+            move_sprite(object->oam+*iter_i, xx, yy);
+            *iter_i = *iter_i + 1;
         }
     }
 }

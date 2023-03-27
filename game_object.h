@@ -14,14 +14,14 @@ typedef struct {
     fixed_t dy;
     const frame_t * frame;
     uint8_t prop;
-    uint8_t gravity: 1;
-    uint8_t draw_order: 1;
-    uint8_t facing_left: 1;
-    uint8_t left: 4;
-    uint8_t right: 4;
-    uint8_t top: 4;
-    uint8_t bottom: 4;
-    uint8_t oam: 6;
+    uint8_t gravity;
+    uint8_t draw_order;
+    uint8_t facing_left;
+    uint8_t left;
+    uint8_t right;
+    uint8_t top;
+    uint8_t bottom;
+    uint8_t oam;
 } game_object_t;
 
 game_object_t * create_game_object();
