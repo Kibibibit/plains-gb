@@ -14,10 +14,10 @@
 game_object_t *create_game_object()
 {
     game_object_t *out = MALLOC(game_object_t);
-    out->x = new_ufixed(0x0,0x0);
-    out->y = new_ufixed(0x0,0x0);
-    out->dx = new_fixed(0x0,0x0);
-    out->dy = new_fixed(0x0,0x0);
+    out->x = new_ufixed(0x0, 0x0);
+    out->y = new_ufixed(0x0, 0x0);
+    out->dx = new_fixed(0x0, 0x0);
+    out->dy = new_fixed(0x0, 0x0);
     out->facing_left = 0x0;
     out->gravity = 0x1;
     out->draw_order = 0x1;
@@ -42,9 +42,11 @@ void destroy_game_object(game_object_t *object)
     free(object);
 }
 
-uint8_t abs_ceil_fixed(fixed_t * x) {
-    fixed_t * copy = fixed_copy(x);
-    if (copy->h < 0) {
+uint8_t abs_ceil_fixed(fixed_t *x)
+{
+    fixed_t *copy = fixed_copy(x);
+    if (copy->h < 0)
+    {
         fixed_t *mask = new_fixed(0xFF, 0xFF);
         copy->w = copy->w ^ mask->w;
         copy->w -= mask->w;
@@ -57,19 +59,18 @@ uint8_t abs_ceil_fixed(fixed_t * x) {
         return h + 1;
     }
     return h;
-    
 }
 
 void game_object_update(game_object_t *object)
 {
-    //pointer to object->x
-    ufixed_t * ox = object->x;
+    // pointer to object->x
+    ufixed_t *ox = object->x;
     // poitner to object->y
-    ufixed_t * oy = object->y;
+    ufixed_t *oy = object->y;
     // Pointer to object->dx
-    fixed_t * odx = object->dx;
+    fixed_t *odx = object->dx;
     // Pointer to object->dy;
-    fixed_t * ody = object->dy;
+    fixed_t *ody = object->dy;
 
     uint8_t x = ox->h;
     uint8_t y = oy->h;
@@ -84,27 +85,29 @@ void game_object_update(game_object_t *object)
     {
         ody->w += GRAVITY;
         object->on_floor = 0x0;
-    } else {
+    }
+    else
+    {
         object->on_floor = 0x1;
     }
 
-    if (ody->w != 0)
+    if (ody->h > 0)
     {
-        if (ody->h > 7) {
+        if (ody->h > 7)
+        {
             ody->h = 7;
         }
-        if (game_object_vert_will_collide(object))
+        if (game_object_bottom_will_collide(object))
         {
             ufixed_floor(oy);
-            int8_t s = sign(ody->h);
             uint8_t r = abs_ceil_fixed(ody);
-            ody->h = s;
+            ody->h = 0x1;
             ody->l = 0;
             for (*iter_y = 0; *iter_y < r; *iter_y = *iter_y + 1)
             {
-                if (!game_object_vert_will_collide(object))
+                if (!game_object_bottom_will_collide(object))
                 {
-                    oy->h += s;
+                    oy->h += 0x1;
                 }
                 else
                 {
@@ -112,33 +115,86 @@ void game_object_update(game_object_t *object)
                 }
             }
             ody->w = 0;
-            if (!object->on_floor) {
+            if (object->on_floor)
+            {
                 object->on_floor = game_object_on_floor(object);
             }
         }
         else
         {
             oy->w += ody->w;
-            if (object->on_floor) {
+        }
+    }
+    else if (ody->h < 0)
+    {
+        if (game_object_top_will_collide(object))
+        {
+            ufixed_floor(oy);
+            uint8_t r = abs_ceil_fixed(ody);
+            ody->h = -0x1;
+            ody->l = 0;
+            for (*iter_y = 0; *iter_y < r; *iter_y = *iter_y + 1)
+            {
+                if (!game_object_top_will_collide(object))
+                {
+                    oy->h -= 0x1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            ody->w = 0;
+            if (!object->on_floor)
+            {
                 object->on_floor = game_object_on_floor(object);
             }
         }
+        else
+        {
+            oy->w += ody->w;
+        }
     }
-    
-    if (odx->w != 0)
+
+    if (odx->h > 0)
     {
-        if (game_object_hori_will_collide(object))
+        if (game_object_right_will_collide(object))
         {
             ufixed_floor(ox);
-            int8_t s = sign(odx->h);
             uint8_t r = abs_ceil_fixed(odx);
-            odx->h = s;
+            odx->h = 0x1;
             odx->l = 0;
             for (*iter_x = 0; *iter_x < r; *iter_x = *iter_x + 1)
             {
-                if (!game_object_hori_will_collide(object))
+                if (!game_object_right_will_collide(object))
                 {
-                    ox->h += s;
+                    ox->h += 0x1;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            odx->w = 0;
+        }
+        else
+        {
+            ox->w += odx->w;
+        }
+    }
+    else if (odx->h < 0)
+    {
+        if (game_object_left_will_collide(object))
+        {
+            ufixed_floor(ox);
+            uint8_t r = abs_ceil_fixed(odx);
+            odx->h = -0x1;
+            odx->l = 0;
+            for (*iter_x = 0; *iter_x < r; *iter_x = *iter_x + 1)
+            {
+                if (!game_object_left_will_collide(object))
+                {
+                    ox->h -= 0x1;
                 }
                 else
                 {
@@ -157,6 +213,7 @@ void game_object_update(game_object_t *object)
         object->do_draw = 0x1;
     }
 }
+
 void game_object_set_prop(game_object_t *object, uint8_t prop)
 {
     uint8_t tile_count = object->frame->tile_count;
@@ -181,8 +238,9 @@ void game_object_clear_oam(game_object_t *object)
 
 void game_object_set_frame(game_object_t *object, const frame_t *frame)
 {
-    
-    if (object->frame == frame) {
+
+    if (object->frame == frame)
+    {
         return;
     }
     if (object->frame->tile_count != frame->tile_count)
@@ -235,46 +293,61 @@ void game_object_draw(game_object_t *object)
     }
 }
 
-uint8_t game_object_vert_will_collide(game_object_t *object)
+uint8_t game_object_vert_will_collide(game_object_t *object, uint8_t offset)
 {
-    ufixed_t * y = ufixed_copy(object->y);
+    ufixed_t *y = ufixed_copy(object->y);
     y->w += object->dy->w;
-    uint8_t y0 = y->h + OBJECT_TOP(object);
-    uint8_t y1 = y->h + OBJECT_BOTTOM(object);
+    uint8_t y0 = y->h + offset;
     free(y);
     uint8_t l = OBJECT_LEFT(object);
     uint8_t r = OBJECT_RIGHT(object);
     uint8_t x0 = object->x->h;
-    uint8_t x1 = x0+r;
+    uint8_t x1 = x0 + r;
     for (*iter_x = l; *iter_x < r; *iter_x = *iter_x + 7)
     {
-        if (solid_at(x0 + *iter_x, y0) || solid_at(x0 + *iter_x, y1))
+        if (solid_at(x0 + *iter_x, y0))
         {
             return 0x1;
         }
     }
-    return solid_at(x1, y0) || solid_at(x1, y1);
+    return solid_at(x1, y0);
 }
 
-uint8_t game_object_hori_will_collide(game_object_t *object)
+uint8_t game_object_hori_will_collide(game_object_t *object, uint8_t offset)
 {
-    ufixed_t * x = ufixed_copy(object->x);
+    ufixed_t *x = ufixed_copy(object->x);
     x->w += object->dx->w;
-    uint8_t x0 = x->h + OBJECT_LEFT(object);
-    uint8_t x1 = x->h + OBJECT_RIGHT(object);
+    uint8_t x0 = x->h + offset;
     free(x);
     uint8_t b = OBJECT_BOTTOM(object);
     uint8_t t = OBJECT_TOP(object);
     uint8_t y0 = object->y->h;
-    uint8_t y1 = y0+b;
+    uint8_t y1 = y0 + b;
     for (*iter_y = t; *iter_y < b; *iter_y = *iter_y + 7)
     {
-        if (solid_at(x0, y0 + *iter_y) || solid_at(x1, y0 + *iter_y))
+        if (solid_at(x0, y0 + *iter_y))
         {
             return 0x1;
         }
     }
-    return solid_at(x0, y1) || solid_at(x1, y1);
+    return solid_at(x0, y1);
+}
+
+uint8_t game_object_top_will_collide(game_object_t *object)
+{
+    return game_object_vert_will_collide(object, OBJECT_TOP(object));
+}
+uint8_t game_object_bottom_will_collide(game_object_t *object)
+{
+    return game_object_vert_will_collide(object, OBJECT_BOTTOM(object));
+}
+uint8_t game_object_left_will_collide(game_object_t *object)
+{
+    return game_object_hori_will_collide(object, OBJECT_LEFT(object));
+}
+uint8_t game_object_right_will_collide(game_object_t *object)
+{
+    return game_object_hori_will_collide(object, OBJECT_RIGHT(object));
 }
 
 uint8_t game_object_on_floor(game_object_t *object)

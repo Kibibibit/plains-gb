@@ -141,6 +141,7 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
     if ((input & J_RIGHT))
     {
         odx->h = speed;
+        odx->l = 0;
 
         // Clear fifth bit
         p = p & (~PROP_HORI_FLIP);
@@ -150,6 +151,7 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
     else if ((input & J_LEFT))
     {
         odx->h = -speed;
+        odx->l = 0;
         p = p | (PROP_HORI_FLIP);
         object->facing_left = 0x1;
         game_object_set_prop(object, p);

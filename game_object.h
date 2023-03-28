@@ -39,7 +39,11 @@ void game_object_draw(game_object_t * object);
 void game_object_clear_oam(game_object_t * object);
 void game_object_set_frame(game_object_t * object, const frame_t * frame);
 uint8_t game_object_on_floor(game_object_t * object);
-uint8_t game_object_hori_will_collide(game_object_t * object);
-uint8_t game_object_vert_will_collide(game_object_t * object);
+uint8_t game_object_hori_will_collide(game_object_t * object, uint8_t offset);
+uint8_t game_object_vert_will_collide(game_object_t * object, uint8_t offset);
+uint8_t game_object_top_will_collide(game_object_t * object);
+uint8_t game_object_bottom_will_collide(game_object_t * object);
+uint8_t game_object_left_will_collide(game_object_t * object);
+uint8_t game_object_right_will_collide(game_object_t * object);
 uint8_t abs_ceil_fixed(fixed_t * x);
 #endif
