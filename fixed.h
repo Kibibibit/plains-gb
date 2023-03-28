@@ -25,11 +25,14 @@ typedef union _ufixed_t
 } ufixed_t;
 
 
-fixed_t new_fixed(int8_t h, uint8_t l);
-ufixed_t new_ufixed(uint8_t h, uint8_t l);
-fixed_t fixed_floor(fixed_t x);
-ufixed_t ufixed_round(ufixed_t x);
-ufixed_t ufixed_ceil(ufixed_t x);
-ufixed_t ufixed_floor(ufixed_t x);
-ufixed_t fixed_abs(fixed_t x);
+fixed_t * new_fixed(int8_t h, uint8_t l);
+ufixed_t * new_ufixed(uint8_t h, uint8_t l);
+fixed_t * fixed_copy(fixed_t * x);
+ufixed_t * ufixed_copy(ufixed_t * x);
+void fixed_floor(fixed_t * x);
+void fixed_ceil(fixed_t * x);
+void ufixed_round(ufixed_t * x);
+void ufixed_ceil(ufixed_t * x);
+void ufixed_floor(ufixed_t * x);
+void fixed_abs(fixed_t * x);
 #endif

@@ -100,20 +100,20 @@ int main()
 
     player_t * player = player_create();
     player->object->oam = 0x0;
-    player->object->x.h = 40;
-    player->object->y.h = 40;
+    player->object->x->h = 40;
+    player->object->y->h = 40;
 
-    // player_t * player2 = player_create();
-    // player2->object->oam = 0x4;
-    // player2->object->x.h = 100;
-    // player2->object->y.h = 40;
+    player_t * player2 = player_create();
+    player2->object->oam = 0x4;
+    player2->object->x->h = 100;
+    player2->object->y->h = 40;
 
     while (1)
     {
         player_update(player);
         game_object_draw(player->object);
-        // player_update(player2);
-        // game_object_draw(player2->object);
+        player_update(player2);
+        game_object_draw(player2->object);
         wait_vbl_done();
     }
 }

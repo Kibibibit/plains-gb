@@ -4,8 +4,7 @@
 #include <stdint.h>
 #include "game_object.h"
 
-#define PLAYER_JUMP_DYH -3
-#define PLAYER_JUMP_DYL 64
+#define PLAYER_JUMP (int16_t)0xFD40
 
 #define PLAYER_STATE_JUMP       0x0
 #define PLAYER_STATE_GROUNDED   0x1

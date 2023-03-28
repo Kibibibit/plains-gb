@@ -14,10 +14,10 @@
 #define OBJECT_BOTTOM(object) nibble_low(object->tb)
 
 typedef struct {
-    ufixed_t x;
-    ufixed_t y;
-    fixed_t dx;
-    fixed_t dy;
+    ufixed_t * x;
+    ufixed_t * y;
+    fixed_t * dx;
+    fixed_t * dy;
     const frame_t * frame;
     uint8_t prop;
     uint8_t timer;
@@ -41,4 +41,5 @@ void game_object_set_frame(game_object_t * object, const frame_t * frame);
 uint8_t game_object_on_floor(game_object_t * object);
 uint8_t game_object_hori_will_collide(game_object_t * object);
 uint8_t game_object_vert_will_collide(game_object_t * object);
+uint8_t abs_ceil_fixed(fixed_t * x);
 #endif
