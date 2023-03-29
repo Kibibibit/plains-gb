@@ -136,7 +136,7 @@ void player_move(player_t *player, uint8_t input, int8_t speed, uint8_t friction
 {
     game_object_t *object = player->object;
     uint8_t face_left = object->facing_left;
-    uint8_t p = object->prop;
+    uint8_t p = frame_get_prop(object->oam);
     fixed_t *odx = object->dx;
     if ((input & J_RIGHT))
     {

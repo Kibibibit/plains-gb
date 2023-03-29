@@ -37,7 +37,7 @@ void fixed_floor(fixed_t *x)
     x->l = 0;
 }
 
-void fixed_ceil(fixed_t * x)
+void fixed_ceil(fixed_t *x)
 {
     if (x->l != 0)
     {
@@ -74,4 +74,23 @@ void fixed_abs(fixed_t *x)
     fixed_t *mask = new_fixed(0xFF, 0xFF);
     x->w = x->w ^ mask->w;
     x->w -= mask->w;
+}
+
+uint8_t abs_ceil_fixed(fixed_t *x)
+{
+    fixed_t *copy = fixed_copy(x);
+    if (copy->h < 0)
+    {
+        fixed_t *mask = new_fixed(0xFF, 0xFF);
+        copy->w = copy->w ^ mask->w;
+        copy->w -= mask->w;
+    }
+    uint8_t l = copy->l;
+    uint8_t h = (uint8_t)copy->h;
+    free(copy);
+    if (l != 0)
+    {
+        return h + 1;
+    }
+    return h;
 }

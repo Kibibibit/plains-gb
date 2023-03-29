@@ -35,4 +35,5 @@ void ufixed_round(ufixed_t * x);
 void ufixed_ceil(ufixed_t * x);
 void ufixed_floor(ufixed_t * x);
 void fixed_abs(fixed_t * x);
+uint8_t abs_ceil_fixed(fixed_t * x);
 #endif

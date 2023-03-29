@@ -20,8 +20,6 @@ game_object_t *create_game_object()
     out->dy = new_fixed(0x0, 0x0);
     out->facing_left = 0x0;
     out->gravity = 0x1;
-    out->draw_order = 0x1;
-    out->prop = 0x0;
     out->timer = 0x0;
     out->tb = 0x08;
     out->lr = 0x08;
@@ -42,24 +40,7 @@ void destroy_game_object(game_object_t *object)
     free(object);
 }
 
-uint8_t abs_ceil_fixed(fixed_t *x)
-{
-    fixed_t *copy = fixed_copy(x);
-    if (copy->h < 0)
-    {
-        fixed_t *mask = new_fixed(0xFF, 0xFF);
-        copy->w = copy->w ^ mask->w;
-        copy->w -= mask->w;
-    }
-    uint8_t l = copy->l;
-    uint8_t h = (uint8_t)copy->h;
-    free(copy);
-    if (l != 0)
-    {
-        return h + 1;
-    }
-    return h;
-}
+
 
 void game_object_update(game_object_t *object)
 {
@@ -216,24 +197,12 @@ void game_object_update(game_object_t *object)
 
 void game_object_set_prop(game_object_t *object, uint8_t prop)
 {
-    uint8_t tile_count = object->frame->tile_count;
-    uint8_t oam = object->oam;
-    for (*iter_i = 0; *iter_i < tile_count; *iter_i = *iter_i + 1)
-    {
-        set_sprite_prop(oam + *iter_i, prop);
-    }
+    frame_set_prop(object->frame, object->oam, prop);
 }
 
 void game_object_clear_oam(game_object_t *object)
 {
-    uint8_t oam = object->oam;
-    uint8_t tile_count = object->frame->tile_count;
-    for (*iter_i = 0; *iter_i < tile_count; *iter_i = *iter_i + 1)
-    {
-        set_sprite_tile(oam + *iter_i, SPR_BLANK);
-        move_sprite(oam + *iter_i, 0, 0);
-        set_sprite_prop(oam + *iter_i, 0);
-    }
+    frame_clear_oam(object->frame, object->oam);
 }
 
 void game_object_set_frame(game_object_t *object, const frame_t *frame)
@@ -260,35 +229,7 @@ void game_object_draw(game_object_t *object)
 {
     if (object->do_draw)
     {
-        *iter_i = 0;
-
-        uint8_t xx = 0x0;
-        uint8_t yy = 0x0;
-        uint8_t y_tiles = FRAME_Y_TILES(object->frame);
-        uint8_t x_tiles = FRAME_X_TILES(object->frame);
-        uint8_t xh = object->x->h;
-        uint8_t yh = object->y->h;
-        uint8_t oam = object->oam;
-        uint8_t facing_left = object->facing_left;
-
-        for (*iter_y = 0; *iter_y < y_tiles; *iter_y = *iter_y + 1)
-        {
-            for (*iter_x = 0; *iter_x < x_tiles; *iter_x = *iter_x + 1)
-            {
-                if (facing_left)
-                {
-                    xx = xh + ((x_tiles - 1 - *iter_x) << 3);
-                }
-                else
-                {
-                    xx = xh + (*iter_x << 3);
-                }
-
-                yy = yh + (*iter_y << 3);
-                move_sprite(oam + *iter_i, xx, yy);
-                *iter_i = *iter_i + 1;
-            }
-        }
+        frame_draw(object->frame, object->oam, object->x->h, object->y->h, object->facing_left);
         object->do_draw = 0x0;
     }
 }

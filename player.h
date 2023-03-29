@@ -20,6 +20,18 @@ typedef struct {
 player_t * player_create();
 void player_update(player_t * player);
 
+void player_set_frame(const frame_t * frame);
+void player_draw();
+uint8_t player_on_floor(game_object_t * object);
+uint8_t player_hori_will_collide(game_object_t * object, uint8_t offset);
+uint8_t player_vert_will_collide(game_object_t * object, uint8_t offset);
+uint8_t player_top_will_collide(game_object_t * object);
+uint8_t player_bottom_will_collide(game_object_t * object);
+uint8_t player_left_will_collide(game_object_t * object);
+uint8_t player_right_will_collide(game_object_t * object);
+
+
+
 void player_update_jump(player_t * player, uint8_t input);
 void player_update_grounded(player_t * player, uint8_t input);
 void player_update_walk(player_t * player, uint8_t input);

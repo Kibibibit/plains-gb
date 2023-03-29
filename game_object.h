@@ -19,10 +19,8 @@ typedef struct {
     fixed_t * dx;
     fixed_t * dy;
     const frame_t * frame;
-    uint8_t prop;
     uint8_t timer;
     uint8_t gravity;
-    uint8_t draw_order;
     uint8_t facing_left;
     uint8_t lr;
     uint8_t tb;
