@@ -4,52 +4,61 @@
 #include "iters.h"
 #include "sprite_constants.h"
 
-void frame_set_prop(frame_t *frame, uint8_t oam, uint8_t prop)
+void frame_set_prop(const frame_t *frame, uint8_t oam, uint8_t prop)
 {
     uint8_t tile_count = frame->tile_count;
-    for (*iter_i = 0; *iter_i < tile_count; *iter_i = *iter_i + 1)
+    for (*iter0 = 0; *iter0 < tile_count; *iter0 = *iter0 + 1)
     {
-        set_sprite_prop(oam + *iter_i, prop);
+        set_sprite_prop(oam + *iter0, prop);
     }
 }
-void frame_draw(frame_t *frame, uint8_t oam, uint8_t x, uint8_t y, uint8_t facing_left)
+void frame_draw(const frame_t *frame, uint8_t oam, uint8_t x, uint8_t y, uint8_t facing_left)
 {
-    *iter_i = 0;
+    *iter0 = 0;
     uint8_t xx = 0x0;
     uint8_t yy = 0x0;
     uint8_t y_tiles = FRAME_Y_TILES(frame);
     uint8_t x_tiles = FRAME_X_TILES(frame);
 
-    for (*iter_y = 0; *iter_y < y_tiles; *iter_y = *iter_y + 1)
+    for (*iter1 = 0; *iter1 < y_tiles; *iter1 = *iter1 + 1)
     {
-        for (*iter_x = 0; *iter_x < x_tiles; *iter_x = *iter_x + 1)
+        for (*iter2 = 0; *iter2 < x_tiles; *iter2 = *iter2 + 1)
         {
             if (facing_left)
             {
-                xx = x + ((x_tiles - 1 - *iter_x) << 3);
+                xx = x + ((x_tiles - 1 - *iter2) << 3);
             }
             else
             {
-                xx = x + (*iter_x << 3);
+                xx = x + (*iter2 << 3);
             }
 
-            yy = y + (*iter_y << 3);
-            move_sprite(oam + *iter_i, xx, yy);
-            *iter_i = *iter_i + 1;
+            yy = y + (*iter1 << 3);
+            move_sprite(oam + *iter0, xx, yy);
+            *iter0 = *iter0 + 1;
         }
     }
 }
-void frame_clear_oam(frame_t *frame, uint8_t oam)
+void frame_clear_oam(const frame_t *frame, uint8_t oam)
 {
     uint8_t tile_count = frame->tile_count;
-    for (*iter_i = 0; *iter_i < tile_count; *iter_i = *iter_i + 1)
+    for (*iter0 = 0; *iter0 < tile_count; *iter0 = *iter0 + 1)
     {
-        set_sprite_tile(oam + *iter_i, SPR_BLANK);
-        move_sprite(oam + *iter_i, 0, 0);
-        set_sprite_prop(oam + *iter_i, 0);
+        set_sprite_tile(oam + *iter0, SPR_BLANK);
+        move_sprite(oam + *iter0, 0, 0);
+        set_sprite_prop(oam + *iter0, 0);
     }
 }
 
 uint8_t frame_get_prop(uint8_t oam) {
     return get_sprite_prop(oam);
+}
+
+void frame_hide(const frame_t * frame, uint8_t oam) 
+{
+    uint8_t tile_count = frame->tile_count;
+    for (*iter0 = 0; *iter0 < tile_count; *iter0 = *iter0 +1)
+    {
+        move_sprite(oam + *iter0, 0, 0);
+    }
 }

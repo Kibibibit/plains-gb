@@ -33,9 +33,9 @@ uint8_t get_bank_entry(uint8_t bank, uint8_t i) {
 }
 
 uint8_t get_free_bank() {
-    for (*iter_i = 0; *iter_i < BANK_COUNT; *iter_i = *iter_i +1) {
-        const uint8_t val = get_free_bank_entry(*iter_i);
-        const uint8_t bank_i = *iter_i << 0x4;
+    for (*iter0 = 0; *iter0 < BANK_COUNT; *iter0 = *iter0 +1) {
+        const uint8_t val = get_free_bank_entry(*iter0);
+        const uint8_t bank_i = *iter0 << 0x4;
         if (val != BANK_FULL) {
             return val | bank_i;
         }

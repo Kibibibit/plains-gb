@@ -3,11 +3,8 @@
 
 #include <stdint.h>
 
-
-extern uint8_t *const iter_i;
-extern uint8_t *const iter_x;
-extern uint8_t *const iter_y;
-
-
+extern uint8_t *const iter0;
+extern uint8_t *const iter1;
+extern uint8_t *const iter2;
 
 #endif

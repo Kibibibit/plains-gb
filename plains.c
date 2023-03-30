@@ -1,10 +1,11 @@
 #include <gb/gb.h>
 #include <gb/cgb.h>
-#include <gbdk/emu_debug.h>
+#include "inputs.h"
 #include "bkg_funcs.h"
 #include "sprites.h"
 #include "tiles.h"
 #include "player.h"
+#include "player_globals.h"
 #include "fixed.h"
 #include "constants.h"
 #include "game_object.h"
@@ -98,22 +99,16 @@ int main()
     set_bkg_props(0, 12, 20, 1, test_floor_prop);
 
 
-    player_t * player = player_create();
-    player->object->oam = 0x0;
-    player->object->x->h = 40;
-    player->object->y->h = 40;
+    player_init();
+    
+    player_x->h = 40;
+    player_y->h = 40;
 
-    // player_t * player2 = player_create();
-    // player2->object->oam = 0x4;
-    // player2->object->x->h = 100;
-    // player2->object->y->h = 40;
-
-    while (1)
+    while (0x1)
     {
-        player_update(player);
-        game_object_draw(player->object);
-        // player_update(player2);
-        // game_object_draw(player2->object);
+        update_input();
+        player_update();
+        player_draw();
         wait_vbl_done();
     }
 }
