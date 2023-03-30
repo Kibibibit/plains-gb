@@ -83,7 +83,9 @@ int main()
 
     for (uint8_t i = 0; i < 0x20; i++) {
         set_bkg_tile_xy(i,11,TILE_INDEX_GRASS_FG);
+        set_bkg_tile_xy(i,10,TILE_INDEX_DIRT_BREAK);
         set_bkg_prop_xy(i, 11,TILE_PAL_INDEX_FG_1);
+        set_bkg_prop_xy(i,10,TILE_PAL_INDEX_FG_1);
     }
 
 
