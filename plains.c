@@ -8,7 +8,6 @@
 #include "player_globals.h"
 #include "fixed.h"
 #include "constants.h"
-#include "game_object.h"
 #include "frame_constants.h"
 
 const palette_color_t palettes[] = {
@@ -81,34 +80,40 @@ int main()
     set_sprite_palette(0x0, 5, palettes);
     set_bkg_palette(0, 4, bkg_palettes);
 
-    set_bkg_tiles(0, 11, 20, 1, test_floor);
-    set_bkg_props(0, 11, 20, 1, test_floor_prop);
-    set_bkg_tiles(0, 7, 10, 1, test_floor);
-    set_bkg_props(0, 7, 10, 1, test_floor_prop);
-    set_bkg_tile_xy(10, 10, TILE_INDEX_GRASS_FG);
-    set_bkg_tile_xy(10, 11, TILE_INDEX_DIRT_FG);
-    set_bkg_prop_xy(10, 10, TILE_PAL_INDEX_FG_1);
-    set_bkg_tile_xy(11, 10, TILE_INDEX_DIRT_BREAK);
-    set_bkg_prop_xy(11, 10, TILE_PAL_INDEX_FG_1);
-    set_bkg_tile_xy(11, 9, TILE_INDEX_DIRT_BREAK);
-    set_bkg_prop_xy(11, 9, TILE_PAL_INDEX_FG_1);
-    set_bkg_tile_xy(11, 8, TILE_INDEX_DIRT_BREAK);
-    set_bkg_prop_xy(11, 8, TILE_PAL_INDEX_FG_1);
 
-    set_bkg_tiles(0, 12, 20, 1, test_floor);
-    set_bkg_props(0, 12, 20, 1, test_floor_prop);
+    for (uint8_t i = 0; i < 0x20; i++) {
+        set_bkg_tile_xy(i,11,TILE_INDEX_GRASS_FG);
+        set_bkg_prop_xy(i, 11,TILE_PAL_INDEX_FG_1);
+    }
+
 
 
     player_init();
-    
+
+    fixed_t * world_scroll_x_f = new_fixed(0x0,0x0);
+
     player_x->h = 40;
     player_y->h = 40;
+
+    uint8_t last_x = 40;
+    int8_t x_diff = 0;
+
+    world_scroll_x = 0x0;
+    world_scroll_y = 0x0;
 
     while (0x1)
     {
         update_input();
+        
+        
         player_update();
+        x_diff = player_x->h-last_x;
+        world_scroll_x += x_diff;
+        scroll_bkg(x_diff,0);
         player_draw();
         wait_vbl_done();
+        last_world_scroll_x = world_scroll_x;
+        last_world_scroll_y = world_scroll_y;
+        last_x = player_x->h;
     }
 }

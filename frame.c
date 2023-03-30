@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <gb/gb.h>
 #include "iters.h"
+#include "player_globals.h"
 #include "sprite_constants.h"
 
 void frame_set_prop(const frame_t *frame, uint8_t oam, uint8_t prop)
@@ -35,6 +36,7 @@ void frame_draw(const frame_t *frame, uint8_t oam, uint8_t x, uint8_t y, uint8_t
 
             yy = y + (*iter1 << 3);
             move_sprite(oam + *iter0, xx, yy);
+            scroll_sprite(oam +*iter0, -world_scroll_x, -world_scroll_y);
             *iter0 = *iter0 + 1;
         }
     }

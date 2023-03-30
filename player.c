@@ -109,7 +109,7 @@ void player_update()
     {
         player_resolve_collision(player_dx, player_x, -0x1, 0x0, iter0, player_left_will_collide);
     }
-    if (player_x->h != x || player_y->h != y)
+    if (player_x->h != x || player_y->h != y || world_scroll_x != last_world_scroll_x || world_scroll_y != last_world_scroll_y)
     {
         player_do_draw = 0x1;
     }
@@ -245,12 +245,12 @@ void player_state_machine()
 
 void player_update_jump()
 {
-    player_set_frame(shovel_frame_jump);
 
     player_move(2, 10);
 
     if ((*input & J_DOWN) > 0)
     {
+        player_set_frame(shovel_frame_drop);
         player_state = PLAYER_STATE_DROP;
         return;
     }
@@ -258,16 +258,16 @@ void player_update_jump()
     if (player_on_floor)
     {
         player_state = PLAYER_STATE_GROUNDED;
+        player_set_frame(shovel_frame_idle);
         return;
     }
 }
 void player_update_grounded()
 {
-    player_set_frame(shovel_frame_idle);
-
     if (((*pressed & J_A) > 0))
     {
         player_dy->w = PLAYER_JUMP;
+        player_set_frame(shovel_frame_jump);
     }
 
     player_move(2, 2);
@@ -283,6 +283,7 @@ void player_update_walk()
     if (((*pressed & J_A) > 0))
     {
         player_dy->w = PLAYER_JUMP;
+        player_set_frame(shovel_frame_jump);
         return;
     }
 
@@ -308,6 +309,7 @@ void player_update_walk()
 
     if (player_dx->w == 0)
     {
+        player_set_frame(shovel_frame_idle);
         player_state = PLAYER_STATE_GROUNDED;
         return;
     }
@@ -371,7 +373,6 @@ uint8_t player_bounce_tile()
 
 void player_update_drop()
 {
-    player_set_frame(shovel_frame_drop);
 
     player_move(2, 10);
 
@@ -395,7 +396,8 @@ void player_update_drop()
         }
     }
     else if (player_on_floor)
-    {
+    {   
+        player_set_frame(shovel_frame_idle);
         player_state = PLAYER_STATE_GROUNDED;
         return;
     }

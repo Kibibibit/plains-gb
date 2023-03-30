@@ -17,3 +17,7 @@ uint8_t player_do_draw;
 uint8_t player_on_floor;
 uint8_t player_state;
 uint8_t player_on_screen;
+int8_t world_scroll_x;
+int8_t world_scroll_y;
+int8_t last_world_scroll_x;
+int8_t last_world_scroll_y;

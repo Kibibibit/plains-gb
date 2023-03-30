@@ -32,5 +32,9 @@ extern uint8_t player_do_draw;
 extern uint8_t player_on_floor;
 extern uint8_t player_state;
 extern uint8_t player_on_screen;
+extern int8_t last_world_scroll_x;
+extern int8_t last_world_scroll_y;
+extern int8_t world_scroll_x;
+extern int8_t world_scroll_y;
 
 #endif
