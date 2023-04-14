@@ -2,8 +2,8 @@
 #define CONSTANTS_H
 
 
-#define SOLID_FLAG 0x8
-#define BREAK_FLAG 0x10
+#define SOLID_FLAG 0b010000
+#define BREAK_FLAG 0b100000
 
 #define PROP_HORI_FLIP 0b00100000
 
